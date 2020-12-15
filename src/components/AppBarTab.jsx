@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 
 import theme from '../theme';
 
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
 
 const AppBarTab = ({ label }) => {
     return <TouchableWithoutFeedback onPress={() => alert('Pressed!')}>
-        <Text style={styles.tab}>{ label }</Text>
+        <View><Text style={styles.tab}>{ label }</Text></View>
     </TouchableWithoutFeedback>;
 };
 

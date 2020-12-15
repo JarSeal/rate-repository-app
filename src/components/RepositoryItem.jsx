@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     },
     bottomItem: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
     },
     numbers: {
         paddingLeft: 24,
