@@ -1,9 +1,10 @@
 import React from 'react';
-import { TouchableWithoutFeedback, View, StyleSheet } from 'react-native';
+import { TouchableWithoutFeedback, View, StyleSheet, Alert } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import theme from '../theme';
 
+import theme from '../theme';
+import UseSignIn from '../hooks/useSignIn';
 import FormikTextInput from './FormikTextInput';
 import Text from './Text';
 
@@ -31,11 +32,7 @@ const validationSchema = yup.object().shape({
         .string()
         .max(40, 'Too Long!')
         .required('Password is required!'),
-  });
-
-const onSubmit = (values) => {
-    console.log(values);
-  };
+});
   
 const initialSignInValues = {
     username: '',
@@ -53,6 +50,18 @@ const SignInForm = ({ onSubmit }) => {
 };
 
 const SignIn = () => {
+    const [ signIn ] = UseSignIn();
+
+    const onSubmit = async (values) => {
+        const { username, password } = values;
+        try {
+            const { data } = await signIn({ username, password });
+            console.log('RESULT', data);
+        } catch (e) {
+            Alert.alert('Sign In Failed', e.message.replace('GraphQL error: ', ''));
+        }
+    };
+
     return (
         <Formik
             initialValues={initialSignInValues}
