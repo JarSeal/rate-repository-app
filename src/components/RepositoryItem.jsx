@@ -6,6 +6,7 @@ import theme from '../theme';
 const styles = StyleSheet.create({
     item: {
         padding: 16,
+        backgroundColor: '#ffffff',
     },
     topItem: {
         flexDirection: 'row',
