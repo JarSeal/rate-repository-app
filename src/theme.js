@@ -6,6 +6,7 @@ const theme = {
       appBackground: '#cccccc',
       tabBarBackground: '#24292e',
       tabBarTabText: '#ffffff',
+      error: '#d73a4a',
     },
     fontSizes: {
       body: 14,
