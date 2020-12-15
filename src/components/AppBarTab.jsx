@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         color: theme.colors.tabBarTabText,
         fontSize: theme.fontSizes.tabBarTabText,
         fontWeight: theme.fontWeights.bold,
-        padding: 10,
+        padding: 16,
     },
 });
 
