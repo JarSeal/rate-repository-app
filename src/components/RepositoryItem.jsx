@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const showShortedNumbers = (number) => {
+export const showShortedNumbers = (number) => {
     if(number >= 1000000) {
         return (number / 1000000).toFixed(1) + 'M';
     } else if(number >= 1000) {
@@ -79,27 +79,27 @@ const RepositoryList = ({ item }) => {
                     source={{ uri:item.ownerAvatarUrl }} />
                 <View style={styles.topItemInfo}>
                     <Text style={styles.name} testID='fullName'>{ item.fullName }</Text>
-                    <Text style={styles.description}>{ item.description }</Text>
+                    <Text style={styles.description} testID='description'>{ item.description }</Text>
                     <View style={styles.languagesContainer}>
-                        <Text style={styles.languageBox}>{ item.language }</Text>
+                        <Text style={styles.languageBox} testID='language'>{ item.language }</Text>
                     </View>
                 </View>
             </View>
             <View style={styles.bottomItem}>
                 <View style={styles.numbers}>
-                    <Text style={styles.numbersAmount}>{ showShortedNumbers(item.stargazersCount) }</Text>
+                    <Text style={styles.numbersAmount} testID='stars'>{ showShortedNumbers(item.stargazersCount) }</Text>
                     <Text style={styles.numbersLabel}>Stars</Text>
                 </View>
                 <View style={styles.numbers}>
-                    <Text style={styles.numbersAmount}>{ showShortedNumbers(item.forksCount) }</Text>
+                    <Text style={styles.numbersAmount} testID='forks'>{ showShortedNumbers(item.forksCount) }</Text>
                     <Text style={styles.numbersLabel}>Forks</Text>
                 </View>
                 <View style={styles.numbers}>
-                    <Text style={styles.numbersAmount}>{ showShortedNumbers(item.reviewCount) }</Text>
+                    <Text style={styles.numbersAmount} testID='reviews'>{ showShortedNumbers(item.reviewCount) }</Text>
                     <Text style={styles.numbersLabel}>Reviews</Text>
                 </View>
                 <View style={styles.numbers}>
-                    <Text style={styles.numbersAmount}>{ showShortedNumbers(item.ratingAverage) }</Text>
+                    <Text style={styles.numbersAmount} testID='rating'>{ showShortedNumbers(item.ratingAverage) }</Text>
                     <Text style={styles.numbersLabel}>Rating</Text>
                 </View>
             </View>

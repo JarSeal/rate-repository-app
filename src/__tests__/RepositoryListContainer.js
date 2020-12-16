@@ -1,5 +1,6 @@
 import React from 'react';
 import { RepositoryListContainer } from '../components/RepositoryList';
+import { showShortedNumbers } from '../components/RepositoryItem';
 import { render } from '@testing-library/react-native';
 
 describe('RepositoryList', () => {
@@ -45,12 +46,34 @@ describe('RepositoryList', () => {
         };
         
         const { getAllByTestId } = render(<RepositoryListContainer repositories={repositories} />);
+
         const fullNames = getAllByTestId('fullName');
-        for(let i=0; i<fullNames.length; i++) {
-            expect(fullNames[0]).toHaveTextContent('jaredpalmer/formik');
-            expect(fullNames[1]).toHaveTextContent('async-library/react-async');
-        }
+        expect(fullNames[0]).toHaveTextContent('jaredpalmer/formik');
+        expect(fullNames[1]).toHaveTextContent('async-library/react-async');
         
+        const descriptions = getAllByTestId('description');
+        expect(descriptions[0]).toHaveTextContent('Build forms in React, without the tears');
+        expect(descriptions[1]).toHaveTextContent('Flexible promise-based React data loader');
+
+        const languages = getAllByTestId('language');
+        expect(languages[0]).toHaveTextContent('TypeScript');
+        expect(languages[1]).toHaveTextContent('JavaScript');
+
+        const stars = getAllByTestId('stars');
+        expect(stars[0]).toHaveTextContent(showShortedNumbers(21856));
+        expect(stars[1]).toHaveTextContent(showShortedNumbers(1760));
+
+        const forks = getAllByTestId('forks');
+        expect(forks[0]).toHaveTextContent(showShortedNumbers(1619));
+        expect(forks[1]).toHaveTextContent(showShortedNumbers(69));
+
+        const ratings = getAllByTestId('rating');
+        expect(ratings[0]).toHaveTextContent(showShortedNumbers(88));
+        expect(ratings[1]).toHaveTextContent(showShortedNumbers(72));
+
+        const reviews = getAllByTestId('reviews');
+        expect(reviews[0]).toHaveTextContent(showShortedNumbers(3));
+        expect(reviews[1]).toHaveTextContent(showShortedNumbers(3));
       });
     });
 });
