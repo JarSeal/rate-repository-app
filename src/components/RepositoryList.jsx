@@ -1,21 +1,11 @@
 import React from 'react';
-import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-native';
 
 import { GET_REPOSITORIES } from '../graphql/queries';
 import RepositoryItem from './RepositoryItem';
-
-import theme from '../theme';
-
-const styles = StyleSheet.create({
-  separator: {
-    height: 10,
-    backgroundColor: theme.colors.appBackground,
-  },
-});
-
-const ItemSeparator = () => <View style={styles.separator} />;
+import ItemSeparator from './ItemSeparator';
 
 export const RepositoryListContainer = ({ repositories }) => {
   const history = useHistory();

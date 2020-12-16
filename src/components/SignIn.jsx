@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { TouchableWithoutFeedback, View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useApolloClient } from '@apollo/client';
 import { useHistory } from 'react-router-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import theme from '../theme';
+import Button from './Button';
 import useSignIn from '../hooks/useSignIn';
 import FormikTextInput from './FormikTextInput';
-import Text from './Text';
 import AuthStorageContext from '../contexts/AuthStorageContext';
 
 const styles = StyleSheet.create({
@@ -46,9 +46,7 @@ const SignInForm = ({ onSubmit }) => {
     return <View style={styles.container}>
         <FormikTextInput name="username" placeholder="Username" />
         <FormikTextInput name="password" placeholder="Password" secureTextEntry />
-        <TouchableWithoutFeedback onPress={onSubmit} testID='submitButton'>
-            <Text style={styles.button}>Sign In</Text>
-        </TouchableWithoutFeedback>
+        <Button text='Sign In' onPress={onSubmit} testID='submitButton' />
     </View>;
 };
 
