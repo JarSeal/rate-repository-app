@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TouchableWithoutFeedback, View, StyleSheet, Alert } from 'react-native';
+import { useApolloClient } from '@apollo/client';
+import { useHistory } from 'react-router-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import theme from '../theme';
-import UseSignIn from '../hooks/useSignIn';
+import useSignIn from '../hooks/useSignIn';
 import FormikTextInput from './FormikTextInput';
 import Text from './Text';
+import AuthStorageContext from '../contexts/AuthStorageContext';
 
 const styles = StyleSheet.create({
     container: {
@@ -50,17 +53,43 @@ const SignInForm = ({ onSubmit }) => {
 };
 
 const SignIn = () => {
-    const [ signIn ] = UseSignIn();
+    const [ signIn ] = useSignIn();
+    const [ token, setToken ] = useState(null);
+    const client = useApolloClient();
+    const authStorage = useContext(AuthStorageContext);
+    const history = useHistory();
+
+    useEffect(() => {
+        const checkToken = async () => {
+            const accessToken = await authStorage.getAccessToken();
+            if(token !== accessToken) {
+                setToken(accessToken);
+            }
+        };
+        checkToken();
+        if(token) {
+            history.push('/');
+        }
+    }, [token, setToken]);
 
     const onSubmit = async (values) => {
         const { username, password } = values;
         try {
             const { data } = await signIn({ username, password });
-            console.log('RESULT', data);
+            if(data && data.authorize && data.authorize.accessToken) {
+                authStorage.setAccessToken(data.authorize.accessToken);
+                setToken(data.authorize.accessToken);
+                client.resetStore();
+                history.push('/');
+            }
         } catch (e) {
-            Alert.alert('Sign In Failed', e.message.replace('GraphQL error: ', ''));
+            Alert.alert('Sign in failed', e.message.replace('GraphQL error: ', ''));
         }
     };
+
+    if(token) {
+        return null;
+    }
 
     return (
         <Formik
