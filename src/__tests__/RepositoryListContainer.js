@@ -1,7 +1,29 @@
 import React from 'react';
 import { RepositoryListContainer } from '../components/RepositoryList';
+import { FormikForm } from '../components/SignIn';
 import { showShortedNumbers } from '../components/RepositoryItem';
-import { render } from '@testing-library/react-native';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
+
+describe('SignIn', () => {
+    describe('SignInContainer', () => {
+        it('calls onSubmit function with correct arguments when a valid form is submitted', async () => {
+            const onSubmit = jest.fn();
+            const { getByTestId } = render(<FormikForm onSubmit={onSubmit} />);
+
+            fireEvent.changeText(getByTestId('username'), 'kalle');
+            fireEvent.changeText(getByTestId('password'), 'password');
+            fireEvent.press(getByTestId('submitButton'));
+    
+            await waitFor(() => {
+                expect(onSubmit).toHaveBeenCalledTimes(1);
+                expect(onSubmit.mock.calls[0][0]).toEqual({
+                    username: 'kalle',
+                    password: 'password',
+                });
+            });
+        });
+    });
+});
 
 describe('RepositoryList', () => {
     describe('RepositoryListContainer', () => {
