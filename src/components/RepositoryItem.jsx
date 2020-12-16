@@ -1,6 +1,10 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { useQuery } from '@apollo/react-hooks';
+import { useParams } from 'react-router-native';
+import * as Linking from 'expo-linking';
 
+import { GET_REPOSITORY } from '../graphql/queries';
 import theme from '../theme';
 
 const styles = StyleSheet.create({
@@ -57,7 +61,16 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 4,
         color: theme.colors.textSecondary,
-    }
+    },
+    button: {
+        textAlign: 'center',
+        backgroundColor: theme.colors.primary,
+        padding: 16,
+        borderRadius: 4,
+        fontWeight: theme.fontWeights.bold,
+        color: '#ffffff',
+        marginTop: 16,
+    },
 });
 
 export const showShortedNumbers = (number) => {
@@ -70,7 +83,22 @@ export const showShortedNumbers = (number) => {
     }
 };
 
-const RepositoryList = ({ item }) => {
+const RepositoryItem = ({ item, single }) => {
+    let { id } = useParams();
+
+    if(single) {
+        const { data } = useQuery(GET_REPOSITORY,{ variables: { id } });
+        if(!data || !data.repository) {
+            return (
+                <View style={styles.item}>
+                    <Text>Loading repository..</Text>
+                </View>
+            );
+        } else {
+            item = data.repository;
+        }
+    }
+
     return (
         <View style={styles.item}>
             <View style={styles.topItem}>
@@ -103,8 +131,13 @@ const RepositoryList = ({ item }) => {
                     <Text style={styles.numbersLabel}>Rating</Text>
                 </View>
             </View>
+            { single === true &&
+                <TouchableWithoutFeedback onPress={() => Linking.openURL('https://www.github.com/' + item.fullName)}>
+                    <Text style={styles.button}>Open in GitHub</Text>
+                </TouchableWithoutFeedback>
+            }
         </View>
     );
 };
   
-export default RepositoryList;
+export default RepositoryItem;
