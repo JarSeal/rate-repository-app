@@ -16,12 +16,8 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepositoryList = () => {
-  const { data } = useQuery(GET_REPOSITORIES, {
-    fetchPolicy: 'cache-and-network',
-  });
-  const repositories = data ? data.repositories : null;
-  const repositoryNodes = repositories
+export const RepositoryListContainer = ({ repositories }) => {
+  const repositoryNodes = repositories 
     ? repositories.edges.map(edge => edge.node)
     : [];
 
@@ -34,6 +30,17 @@ const RepositoryList = () => {
         <RepositoryItem item={item} />
       )}
     />
+  );
+};
+
+const RepositoryList = () => {
+  const { data } = useQuery(GET_REPOSITORIES, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const repositories = data ? data.repositories : null;
+
+  return (
+    <RepositoryListContainer repositories={repositories} />
   );
 };
 

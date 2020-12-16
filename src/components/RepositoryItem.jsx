@@ -78,7 +78,7 @@ const RepositoryList = ({ item }) => {
                     style={styles.image}
                     source={{ uri:item.ownerAvatarUrl }} />
                 <View style={styles.topItemInfo}>
-                    <Text style={styles.name}>{ item.fullName }</Text>
+                    <Text style={styles.name} testID='fullName'>{ item.fullName }</Text>
                     <Text style={styles.description}>{ item.description }</Text>
                     <View style={styles.languagesContainer}>
                         <Text style={styles.languageBox}>{ item.language }</Text>
