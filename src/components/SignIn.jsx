@@ -1,10 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { useApolloClient } from '@apollo/client';
 import { useHistory } from 'react-router-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { useQuery } from '@apollo/react-hooks';
 
+import { AUTHORIZED_USER } from '../graphql/queries';
 import Button from './Button';
 import useSignIn from '../hooks/useSignIn';
 import FormikTextInput from './FormikTextInput';
@@ -55,34 +57,21 @@ export const FormikForm = ({ onSubmit }) => {
 
 const SignIn = () => {
     const [ signIn ] = useSignIn();
-    const [ token, setToken ] = useState(null);
     const client = useApolloClient();
     const authStorage = useContext(AuthStorageContext);
     const history = useHistory();
-
-    useEffect(() => {
-        const checkToken = async () => {
-            const accessToken = await authStorage.getAccessToken();
-            if(token !== accessToken) {
-                setToken(accessToken);
-            }
-        };
-        checkToken();
-        if(token) {
-            history.push('/');
-        }
-    }, [token, setToken]);
+    const { data } = useQuery(AUTHORIZED_USER);
+    const authorizedUser = data && data.authorizedUser
+        ? data.authorizedUser
+        : null;
 
     const onSubmit = async (values) => {
         const { username, password } = values;
         try {
             const { data } = await signIn({ username, password });
-            if(data && data.authorize && data.authorize.accessToken) {
-                authStorage.setAccessToken(data.authorize.accessToken);
-                setToken(data.authorize.accessToken);
-                client.resetStore();
-                history.push('/');
-            }
+            authStorage.setAccessToken(data.authorize.accessToken);
+            client.resetStore();
+            history.push('/');
         } catch (e) {
             const errorMsg = e.message.replace('GraphQL error: ', '');
             Alert.alert('Sign in failed', errorMsg);
@@ -90,7 +79,7 @@ const SignIn = () => {
         }
     };
 
-    if(token) {
+    if(authorizedUser) {
         return null;
     }
 
