@@ -39,7 +39,10 @@ const AppBar = () => {
       <ScrollView horizontal style={{flexDirection:'row'}}>
         <AppBarTab label='Repositories' to='/' />
         { authorizedUser !== null
-          ? <AppBarTab label='Logout' to='/signin' logout={logout} />
+          ? <>
+              <AppBarTab label='Create a review' to='/addreview' />
+              <AppBarTab label='Logout' to='/signin' logout={logout} />
+            </>
           : <AppBarTab label='Sign In' to='/signin' />
         }
       </ScrollView>
