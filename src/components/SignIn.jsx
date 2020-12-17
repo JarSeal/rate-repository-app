@@ -16,14 +16,6 @@ const styles = StyleSheet.create({
         padding: 16,
         backgroundColor: '#ffffff',
     },
-    button: {
-        textAlign: 'center',
-        backgroundColor: theme.colors.primary,
-        padding: 16,
-        borderRadius: 4,
-        fontWeight: theme.fontWeights.bold,
-        color: '#ffffff',
-    },
 });
 
 const validationSchema = yup.object().shape({
