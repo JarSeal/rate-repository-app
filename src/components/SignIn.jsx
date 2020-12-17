@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
-import theme from '../theme';
 import Button from './Button';
 import useSignIn from '../hooks/useSignIn';
 import FormikTextInput from './FormikTextInput';
@@ -85,7 +84,9 @@ const SignIn = () => {
                 history.push('/');
             }
         } catch (e) {
-            Alert.alert('Sign in failed', e.message.replace('GraphQL error: ', ''));
+            const errorMsg = e.message.replace('GraphQL error: ', '');
+            Alert.alert('Sign in failed', errorMsg);
+            console.log('Sign in failed:', errorMsg);
         }
     };
 
