@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Text } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-native';
-import { Menu, Divider, Provider } from 'react-native-paper';
+import { Menu, Divider, Provider, Searchbar } from 'react-native-paper';
 
 import { GET_REPOSITORIES } from '../graphql/queries';
 import RepositoryItem from './RepositoryItem';
@@ -10,8 +10,9 @@ import ItemSeparator from './ItemSeparator';
 
 const styles = StyleSheet.create({
   button: {
-      fontSize: 16,
+      fontSize: 17,
       padding: 16,
+      paddingLeft: 24,
       flex: 1,
   },
 });
@@ -63,7 +64,30 @@ const ListOrderMenu = ({ sorter, setSorter }) => {
   );
 };
 
-export const RepositoryListContainer = ({ repositories, sorter, setSorter }) => {
+let timer;
+const SearchAndSort = ({ sorter, setSorter, setSearch }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const onChangeSearch = query => {
+    setSearchQuery(query);
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      setSearch(query);
+    }, 500);
+  };
+  return (
+    <>
+      <Searchbar
+        placeholder="Search"
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        style={{marginLeft:16,marginRight:16,marginTop:16,}}
+      />
+      <ListOrderMenu sorter={sorter} setSorter={setSorter} />
+    </>
+  );
+};
+
+export const RepositoryListContainer = ({ repositories, sorter, setSorter, setSearch }) => {
   const history = useHistory();
   let repositoryNodes = repositories
     ? repositories.edges.map(edge => edge.node)
@@ -75,7 +99,9 @@ export const RepositoryListContainer = ({ repositories, sorter, setSorter }) => 
         data={repositoryNodes}
         ItemSeparatorComponent={ItemSeparator}
         keyExtractor={(item) => item.id.toString()}
-        ListHeaderComponent={<ListOrderMenu sorter={sorter} setSorter={setSorter} />}
+        ListHeaderComponent={
+          <SearchAndSort sorter={sorter} setSorter={setSorter} setSearch={setSearch} />
+        }
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => history.push('/repository/' + item.id)}>
             <RepositoryItem item={item} />
@@ -88,17 +114,34 @@ export const RepositoryListContainer = ({ repositories, sorter, setSorter }) => 
 
 const RepositoryList = () => {
   const [ sorter, setSorter ] = useState('latest');
+  const [ search, setSearch ] = useState('');
+
+  let variables = {};
+  if(sorter === 'latest') {
+    variables.orderBy = 'CREATED_AT';
+    variables.orderDirection = 'DESC';
+  } else {
+    variables.orderBy = 'RATING_AVERAGE';
+    if(sorter === 'highestRated') {
+      variables.orderDirection = 'DESC';
+    } else {
+      variables.orderDirection = 'ASC';
+    }
+  }
+  if(search.length) variables.searchKeyword = search;
+
   const { data } = useQuery(GET_REPOSITORIES, {
     fetchPolicy: 'cache-and-network',
-    variables: sorter === 'latest'
-      ? { orderBy: 'CREATED_AT', orderDirection: 'DESC' }
-      : { orderBy: 'RATING_AVERAGE',
-          orderDirection: sorter === 'highestRated' ? 'DESC' : 'ASC'}
+    variables
   });
   const repositories = data ? data.repositories : null;
 
   return (
-    <RepositoryListContainer repositories={repositories} sorter={sorter} setSorter={setSorter} />
+    <RepositoryListContainer
+      repositories={repositories}
+      sorter={sorter}
+      setSorter={setSorter}
+      setSearch={setSearch} />
   );
 };
 
