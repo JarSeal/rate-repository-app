@@ -57,9 +57,29 @@ export const GET_REPOSITORY = gql`
 `;
 
 export const AUTHORIZED_USER = gql`
-    query {
+    query authorizedUser($first: Int, $after: String) {
         authorizedUser {
             username
+            reviews(first: $first, after: $after) {
+                edges {
+                    node {
+                        id
+                        text
+                        rating
+                        createdAt
+                        user {
+                            id
+                            username
+                        }
+                    }
+                }
+                pageInfo {
+                    endCursor
+                    startCursor
+                    totalCount
+                    hasNextPage
+                }
+            }
         }
     }
 `;

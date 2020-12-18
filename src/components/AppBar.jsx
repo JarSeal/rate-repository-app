@@ -24,7 +24,7 @@ const AppBar = () => {
   const authStorage = useContext(AuthStorageContext);
   const history = useHistory();
   const client = useApolloClient();
-  const { data } = useQuery(AUTHORIZED_USER);
+  const { data } = useQuery(AUTHORIZED_USER, { variables: {}});
   const authorizedUser = data && data.authorizedUser
     ? data.authorizedUser
     : null;
@@ -41,6 +41,7 @@ const AppBar = () => {
         { authorizedUser !== null
           ? <>
               <AppBarTab label='Create a review' to='/addreview' />
+              <AppBarTab label='My reviews' to='/myreviews' />
               <AppBarTab label='Logout' to='/signin' logout={logout} />
             </>
           : <>

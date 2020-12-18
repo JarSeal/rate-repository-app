@@ -70,7 +70,7 @@ const SignUp = () => {
     const authStorage = useContext(AuthStorageContext);
     const history = useHistory();
     const [ mutate ] = useMutation(CREATE_USER);
-    const { data } = useQuery(AUTHORIZED_USER);
+    const { data } = useQuery(AUTHORIZED_USER, { variables: {}});
     const authorizedUser = data && data.authorizedUser
         ? data.authorizedUser
         : null;
