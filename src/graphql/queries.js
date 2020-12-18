@@ -67,6 +67,10 @@ export const AUTHORIZED_USER = gql`
                         text
                         rating
                         createdAt
+                        repositoryId
+                        repository {
+                            fullName
+                        }
                         user {
                             id
                             username
