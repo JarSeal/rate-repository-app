@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
 import { useParams } from 'react-router-native';
 import { format } from 'date-fns';
 
+import useRepository from '../hooks/useRepository';
 import ItemSeparator from './ItemSeparator';
 import RepositoryItem from './RepositoryItem';
-import { GET_REPOSITORY } from '../graphql/queries';
 import theme from '../theme';
 
 const styles = StyleSheet.create({
@@ -65,13 +64,10 @@ const ReviewItem = ({ review }) => {
 const SingleRepository = () => {
     let { id } = useParams();
 
-    const { data } = useQuery(GET_REPOSITORY, {
-        variables: { id },
-        fetchPolicy: 'cache-and-network'
-    });
-    const repository = data && data.repository
-        ? data.repository
-        : null;
+    const variables = {
+        id, first: 4
+    };
+    const { repository, fetchMore } = useRepository(variables);
     if(!repository) {
         return (
             <View style={styles.item}>
@@ -81,6 +77,10 @@ const SingleRepository = () => {
     }
     const reviews = repository.reviews.edges.map(edge => edge.node);
 
+    const onEndReach = () => {
+        fetchMore();
+    };
+
     return (
         <FlatList
             data={reviews}
@@ -88,6 +88,8 @@ const SingleRepository = () => {
             keyExtractor={({ id }) => id}
             ListHeaderComponent={() => <RepositoryItem item={repository} single />}
             ItemSeparatorComponent={ItemSeparator}
+            onEndReached={onEndReach}
+            onEndReachedThreshold={0.5}
         />
     );
 };
