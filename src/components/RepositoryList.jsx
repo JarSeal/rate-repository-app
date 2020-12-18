@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Text } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-native';
 import { Menu, Divider, Provider, Searchbar } from 'react-native-paper';
 
-import { GET_REPOSITORIES } from '../graphql/queries';
+import useRepositories from '../hooks/useRepositories';
 import RepositoryItem from './RepositoryItem';
 import ItemSeparator from './ItemSeparator';
 
@@ -87,7 +86,7 @@ const SearchAndSort = ({ sorter, setSorter, setSearch }) => {
   );
 };
 
-export const RepositoryListContainer = ({ repositories, sorter, setSorter, setSearch }) => {
+export const RepositoryListContainer = ({ repositories, sorter, setSorter, setSearch, onEndReach }) => {
   const history = useHistory();
   let repositoryNodes = repositories
     ? repositories.edges.map(edge => edge.node)
@@ -99,6 +98,8 @@ export const RepositoryListContainer = ({ repositories, sorter, setSorter, setSe
         data={repositoryNodes}
         ItemSeparatorComponent={ItemSeparator}
         keyExtractor={(item) => item.id.toString()}
+        onEndReached={onEndReach}
+        onEndReachedThreshold={0.5}
         ListHeaderComponent={
           <SearchAndSort sorter={sorter} setSorter={setSorter} setSearch={setSearch} />
         }
@@ -116,7 +117,7 @@ const RepositoryList = () => {
   const [ sorter, setSorter ] = useState('latest');
   const [ search, setSearch ] = useState('');
 
-  let variables = {};
+  let variables = { first: 5 };
   if(sorter === 'latest') {
     variables.orderBy = 'CREATED_AT';
     variables.orderDirection = 'DESC';
@@ -130,18 +131,19 @@ const RepositoryList = () => {
   }
   if(search.length) variables.searchKeyword = search;
 
-  const { data } = useQuery(GET_REPOSITORIES, {
-    fetchPolicy: 'cache-and-network',
-    variables
-  });
-  const repositories = data ? data.repositories : null;
+  const { repositories, fetchMore } = useRepositories(variables);
+
+  const onEndReach = () => {
+    fetchMore();
+  };
 
   return (
     <RepositoryListContainer
       repositories={repositories}
       sorter={sorter}
       setSorter={setSorter}
-      setSearch={setSearch} />
+      setSearch={setSearch}
+      onEndReach={onEndReach} />
   );
 };
 
