@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { AUTHORIZED_USER } from '../graphql/queries';
 
 const useUser = (variables) => {
-    const { data, loading, fetchMore, ...result } = useQuery(AUTHORIZED_USER, {
+    const { data, loading, fetchMore, refetch, ...result } = useQuery(AUTHORIZED_USER, {
         variables,
         fetchPolicy: 'cache-and-network'
     });
@@ -45,6 +45,7 @@ const useUser = (variables) => {
         authorizedUser: data ? data.authorizedUser : undefined,
         fetchMore: handleFetchMore,
         loading,
+        refetch,
         ...result,
     };
 };

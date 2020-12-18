@@ -5,7 +5,6 @@ import theme from '../theme';
 const styles = StyleSheet.create({
     button: {
         textAlign: 'center',
-        backgroundColor: theme.colors.primary,
         padding: 16,
         borderRadius: 4,
         fontWeight: theme.fontWeights.bold,
@@ -14,10 +13,10 @@ const styles = StyleSheet.create({
     },
 });
 
-const Button = ({ text, onPress, testID }) => {
+const Button = ({ text, onPress, testID, color }) => {
     return (
         <TouchableWithoutFeedback onPress={onPress} testID={testID}>
-            <View><Text style={styles.button}>{ text }</Text></View>
+            <View><Text style={{...styles.button, backgroundColor: color || theme.colors.primary}}>{ text }</Text></View>
         </TouchableWithoutFeedback>
     );
 };

@@ -4,11 +4,10 @@ import { FlatList } from 'react-native';
 import useUser from '../hooks/useUser';
 import ReviewItem from './ReviewItem';
 import ItemSeparator from './ItemSeparator';
-// import Button from './Button';
 
 const MyReviews = () => {
     const variables = { first: 6 };
-    const { authorizedUser, fetchMore } = useUser(variables);
+    const { authorizedUser, fetchMore, refetch } = useUser(variables);
 
     if(!authorizedUser) {
         return null;
@@ -23,7 +22,9 @@ const MyReviews = () => {
     return (
         <FlatList
             data={reviews}
-            renderItem={({ item }) => <ReviewItem review={item} showRepoName />}
+            renderItem={
+                ({ item }) => <ReviewItem review={item} myReviews refetchMyReviews={() => refetch(variables)} />
+            }
             keyExtractor={({ id }) => id}
             ItemSeparatorComponent={ItemSeparator}
             onEndReached={onEndReach}
